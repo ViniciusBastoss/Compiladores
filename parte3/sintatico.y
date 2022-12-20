@@ -53,9 +53,20 @@ programa
     : cabecalho 
         {contaVar = 0;}
       variaveis 
-        { fprintf(yyout,"\tAMEM\t%d\n", contaVar); }
+        { 
+            mostraTabela();
+            empilha(contaVar);
+            if(contaVar){
+               fprintf(yyout,"\tAMEM\t%d\n", contaVar); 
+            }
+        }
       T_INICIO lista_comandos T_FIM
-        { fprintf(yyout,"\tDMEM\tx\n\tFIMP\n"); }
+        { 
+            int conta = desempilha();
+            if (conta)
+               fprintf(yyout,"\tDMEM\t%d\n", conta); 
+            fprintf(yyout, "\tFIMP\n");    
+        }
     ;
 
 cabecalho
@@ -116,8 +127,6 @@ leitura
     : T_LEIA T_IDENTIF
         { 
             int pos = buscaSimbolo(atomo);
-            if (pos == -1)
-               yyerror("Identificador não declarado!");
             fprintf(yyout,"\tLEIA\n\tARZG\t%d\n", tabSimb[pos].end); 
         }
     ;
@@ -147,8 +156,17 @@ selecao
     ;
 
 atribuicao
-    : T_IDENTIF T_ATRIBUI expressao
-        {fprintf(yyout,"\tARZG\tx\n"); }
+    : T_IDENTIF 
+        {
+            int pos = buscaSimbolo(atomo);
+            empilha(pos);
+        }   
+      T_ATRIBUI expressao
+        {
+            int pos = desempilha();
+            fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
+            
+        }
     ;
 
 expressao
