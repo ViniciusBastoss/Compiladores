@@ -73,9 +73,10 @@
 #include <stdlib.h>
 #include "lexico.c"
 #include "utils.c"
-int contaVar;
+int contaVar;  //conta numero de variaveis
+int rotulo = 0; //marca lugares no codigo
 
-#line 79 "sintatico.c"
+#line 80 "sintatico.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -534,11 +535,11 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    54,    54,    56,    53,    73,    78,    79,    83,    84,
-      88,    89,    93,   100,   110,   111,   115,   116,   117,   118,
-     122,   123,   127,   135,   141,   143,   140,   151,   153,   150,
-     160,   159,   173,   175,   177,   179,   181,   183,   185,   187,
-     189,   191,   195,   200,   202,   204,   206,   208
+       0,    55,    55,    57,    54,    74,    79,    80,    84,    85,
+      89,    90,    94,   101,   111,   112,   116,   117,   118,   119,
+     123,   124,   128,   136,   142,   147,   141,   162,   167,   161,
+     182,   181,   195,   197,   199,   201,   203,   205,   207,   209,
+     211,   213,   217,   222,   224,   226,   228,   230
 };
 #endif
 
@@ -1387,13 +1388,13 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 54 "sintatico.y"
+#line 55 "sintatico.y"
         {contaVar = 0;}
-#line 1393 "sintatico.c"
+#line 1394 "sintatico.c"
     break;
 
   case 3:
-#line 56 "sintatico.y"
+#line 57 "sintatico.y"
         { 
             mostraTabela();
             empilha(contaVar);
@@ -1401,207 +1402,228 @@ yyreduce:
                fprintf(yyout,"\tAMEM\t%d\n", contaVar); 
             }
         }
-#line 1405 "sintatico.c"
+#line 1406 "sintatico.c"
     break;
 
   case 4:
-#line 64 "sintatico.y"
+#line 65 "sintatico.y"
         { 
             int conta = desempilha();
             if (conta)
                fprintf(yyout,"\tDMEM\t%d\n", conta); 
             fprintf(yyout, "\tFIMP\n");    
         }
-#line 1416 "sintatico.c"
+#line 1417 "sintatico.c"
     break;
 
   case 5:
-#line 74 "sintatico.y"
+#line 75 "sintatico.y"
         {fprintf(yyout,"\tINPP\n"); }
-#line 1422 "sintatico.c"
+#line 1423 "sintatico.c"
     break;
 
   case 12:
-#line 94 "sintatico.y"
+#line 95 "sintatico.y"
          { 
            strcpy(elemTab.id, atomo);
            elemTab.end = contaVar;
            insereSimbolo(elemTab);
            contaVar++;
          }
-#line 1433 "sintatico.c"
+#line 1434 "sintatico.c"
     break;
 
   case 13:
-#line 101 "sintatico.y"
+#line 102 "sintatico.y"
         { 
            strcpy(elemTab.id, atomo);
            elemTab.end = contaVar;
            insereSimbolo(elemTab);
            contaVar++;      
         }
-#line 1444 "sintatico.c"
+#line 1445 "sintatico.c"
     break;
 
   case 22:
-#line 128 "sintatico.y"
+#line 129 "sintatico.y"
         { 
             int pos = buscaSimbolo(atomo);
             fprintf(yyout,"\tLEIA\n\tARZG\t%d\n", tabSimb[pos].end); 
         }
-#line 1453 "sintatico.c"
+#line 1454 "sintatico.c"
     break;
 
   case 23:
-#line 136 "sintatico.y"
+#line 137 "sintatico.y"
          { fprintf(yyout,"\tESCR\n"); }
-#line 1459 "sintatico.c"
+#line 1460 "sintatico.c"
     break;
 
   case 24:
-#line 141 "sintatico.y"
-        { fprintf(yyout,"Lx\tNADA\n"); }
-#line 1465 "sintatico.c"
+#line 142 "sintatico.y"
+        { 
+            fprintf(yyout,"L%d\tNADA\n", ++rotulo); 
+            empilha(rotulo);
+        }
+#line 1469 "sintatico.c"
     break;
 
   case 25:
-#line 143 "sintatico.y"
-        { fprintf(yyout,"\tDSVF\tLy\n"); }
-#line 1471 "sintatico.c"
+#line 147 "sintatico.y"
+        {
+             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo);
+             empilha(rotulo);
+        }
+#line 1478 "sintatico.c"
     break;
 
   case 26:
-#line 146 "sintatico.y"
-         { fprintf(yyout,"\tDSVS\tLx\nLy\tNADA\n"); }
-#line 1477 "sintatico.c"
+#line 153 "sintatico.y"
+         { 
+            int rot1 = desempilha();
+            int rot2 = desempilha();
+            fprintf(yyout,"\tDSVS\tL%d\nL%d\tNADA\n",rot2,rot1);
+         }
+#line 1488 "sintatico.c"
     break;
 
   case 27:
-#line 151 "sintatico.y"
-        { fprintf(yyout,"\tDSVF\tLx\n");}
-#line 1483 "sintatico.c"
+#line 162 "sintatico.y"
+        {
+             fprintf(yyout,"\tDSVF\tL%d\n", ++rotulo);
+             empilha(rotulo);
+        }
+#line 1497 "sintatico.c"
     break;
 
   case 28:
-#line 153 "sintatico.y"
-        { fprintf(yyout,"\tDSVS\tLy\nLx\tNADA\n"); }
-#line 1489 "sintatico.c"
+#line 167 "sintatico.y"
+        { 
+            int rot = desempilha();
+            fprintf(yyout,"\tDSVS\tL%d\n", ++rotulo);
+            fprintf(yyout,"L%d\tNADA\n", rot);
+            empilha(rotulo);
+        }
+#line 1508 "sintatico.c"
     break;
 
   case 29:
-#line 155 "sintatico.y"
-        { fprintf(yyout,"Ly\tNADA\n"); }
-#line 1495 "sintatico.c"
+#line 174 "sintatico.y"
+        { 
+            int rot = desempilha();
+            fprintf(yyout,"L%d\tNADA\n", rot); 
+        }
+#line 1517 "sintatico.c"
     break;
 
   case 30:
-#line 160 "sintatico.y"
+#line 182 "sintatico.y"
         {
             int pos = buscaSimbolo(atomo);
             empilha(pos);
         }
-#line 1504 "sintatico.c"
+#line 1526 "sintatico.c"
     break;
 
   case 31:
-#line 165 "sintatico.y"
+#line 187 "sintatico.y"
         {
             int pos = desempilha();
             fprintf(yyout,"\tARZG\t%d\n", tabSimb[pos].end); 
             
         }
-#line 1514 "sintatico.c"
+#line 1536 "sintatico.c"
     break;
 
   case 32:
-#line 174 "sintatico.y"
+#line 196 "sintatico.y"
         {fprintf(yyout,"\tMULT\n"); }
-#line 1520 "sintatico.c"
+#line 1542 "sintatico.c"
     break;
 
   case 33:
-#line 176 "sintatico.y"
+#line 198 "sintatico.y"
         {fprintf(yyout,"\tDIVI\n"); }
-#line 1526 "sintatico.c"
+#line 1548 "sintatico.c"
     break;
 
   case 34:
-#line 178 "sintatico.y"
+#line 200 "sintatico.y"
         {fprintf(yyout,"\tSOMA\n"); }
-#line 1532 "sintatico.c"
+#line 1554 "sintatico.c"
     break;
 
   case 35:
-#line 180 "sintatico.y"
+#line 202 "sintatico.y"
         {fprintf(yyout,"\tSUBT\n"); }
-#line 1538 "sintatico.c"
+#line 1560 "sintatico.c"
     break;
 
   case 36:
-#line 182 "sintatico.y"
+#line 204 "sintatico.y"
         {fprintf(yyout,"\tCMMA\n"); }
-#line 1544 "sintatico.c"
+#line 1566 "sintatico.c"
     break;
 
   case 37:
-#line 184 "sintatico.y"
+#line 206 "sintatico.y"
         {fprintf(yyout,"\tCMME\n"); }
-#line 1550 "sintatico.c"
+#line 1572 "sintatico.c"
     break;
 
   case 38:
-#line 186 "sintatico.y"
-        {fprintf(yyout,"\tCMMIG\n"); }
-#line 1556 "sintatico.c"
+#line 208 "sintatico.y"
+        {fprintf(yyout,"\tCMIG\n"); }
+#line 1578 "sintatico.c"
     break;
 
   case 39:
-#line 188 "sintatico.y"
+#line 210 "sintatico.y"
         {fprintf(yyout,"\tCONJ\n"); }
-#line 1562 "sintatico.c"
+#line 1584 "sintatico.c"
     break;
 
   case 40:
-#line 190 "sintatico.y"
+#line 212 "sintatico.y"
         {fprintf(yyout,"\tDISJ\n"); }
-#line 1568 "sintatico.c"
+#line 1590 "sintatico.c"
     break;
 
   case 42:
-#line 196 "sintatico.y"
+#line 218 "sintatico.y"
         {
             int pos = buscaSimbolo(atomo);
             fprintf(yyout,"\tCRVG\t%d\n", tabSimb[pos].end); 
         }
-#line 1577 "sintatico.c"
+#line 1599 "sintatico.c"
     break;
 
   case 43:
-#line 201 "sintatico.y"
+#line 223 "sintatico.y"
         {fprintf(yyout,"\tCRCT\t%s\n", atomo); }
-#line 1583 "sintatico.c"
+#line 1605 "sintatico.c"
     break;
 
   case 44:
-#line 203 "sintatico.y"
+#line 225 "sintatico.y"
         {fprintf(yyout,"\tCRCT\t1\n"); }
-#line 1589 "sintatico.c"
+#line 1611 "sintatico.c"
     break;
 
   case 45:
-#line 205 "sintatico.y"
+#line 227 "sintatico.y"
         {fprintf(yyout,"\tCRCT\t0\n"); }
-#line 1595 "sintatico.c"
+#line 1617 "sintatico.c"
     break;
 
   case 46:
-#line 207 "sintatico.y"
+#line 229 "sintatico.y"
         {fprintf(yyout,"\tNEGA\n"); }
-#line 1601 "sintatico.c"
+#line 1623 "sintatico.c"
     break;
 
 
-#line 1605 "sintatico.c"
+#line 1627 "sintatico.c"
 
       default: break;
     }
@@ -1833,7 +1855,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 210 "sintatico.y"
+#line 232 "sintatico.y"
 
 
 
