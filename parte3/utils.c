@@ -1,6 +1,7 @@
 // Estrutura da Tabela de Simbolos
 
 #define TAM_TAB 100
+enum {INT, LOG};
 //#include <string.h>
 
 struct elemTabSimbolos {
@@ -10,6 +11,9 @@ struct elemTabSimbolos {
 } tabSimb[TAM_TAB], elemTab;
 
 int posTab = 0;
+
+int desempilha();
+void empilha (int valor);
 
 /*void maiuscula (char *s){
     for(int i = 0; s[i]; i++)
@@ -52,14 +56,15 @@ void insereSimbolo (struct elemTabSimbolos elem){
 void mostraTabela(){
     puts("Tabela de Simbolos");
     puts("------------------");
-    printf("\n%30s | %s\n", "ID", "END");
+    printf("\n%30s | %s | %s \n", "ID", "END", "TIP");
     for(int i = 0; i < 50; i++)
         printf("-");
     for(int i = 0; i < posTab; i++)
-        printf("\n%30s | %d", tabSimb[i].id, tabSimb[i].end);
+        printf("\n%30s | %3d | %s", tabSimb[i].id, tabSimb[i].end, tabSimb[i].tip == INT? "INT" : "LOG");
     printf("\n");
 }
 
+//e f v palavras reservadas
 //Estrutura da Pilha Semantica
 // usada para enderecos, variaveis, rotulos
 
@@ -79,5 +84,13 @@ int desempilha(){
     return pilha[topo--];
 }
 
+
+void testaTipo(int tipo1, int tipo2, int ret){
+    int t1 = desempilha();
+    int t2 = desempilha();
+    if (t1 != tipo1 || t2 != tipo2)
+       yyerror("Incompatibilidade de tipo!");
+    empilha(ret);
+}
 
 
